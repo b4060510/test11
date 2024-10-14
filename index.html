@@ -63,17 +63,22 @@
             const width = 640; 
             const height = 480;
             
-            // 웹캠 설정
-            webcam = new tmImage.Webcam(width, height, flip);
-            await webcam.setup({ facingMode: "environment" });
-            await webcam.play();
-            window.requestAnimationFrame(loop);
-        
-            document.getElementById("webcam-container").appendChild(webcam.canvas);
-            labelContainer = document.getElementById("label-container");
-            infoContainer = document.getElementById("info-container");
-            for (let i = 0; i < maxPredictions; i++) { 
-                labelContainer.appendChild(document.createElement("div"));
+            try {
+                // 웹캠 설정: 후방 카메라를 요청합니다.
+                webcam = new tmImage.Webcam(width, height, flip);
+                await webcam.setup({ video: { facingMode: { exact: "environment" } } });
+                await webcam.play();
+                window.requestAnimationFrame(loop);
+            
+                document.getElementById("webcam-container").appendChild(webcam.canvas);
+                labelContainer = document.getElementById("label-container");
+                infoContainer = document.getElementById("info-container");
+                for (let i = 0; i < maxPredictions; i++) { 
+                    labelContainer.appendChild(document.createElement("div"));
+                }
+            } catch (error) {
+                console.error("카메라에 접근할 수 없습니다: ", error);
+                alert("카메라에 접근할 수 없습니다. 브라우저 권한을 확인하세요.");
             }
         }
 
